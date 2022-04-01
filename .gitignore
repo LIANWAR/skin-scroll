@@ -11,3 +11,8 @@ out/
 !gradle-wrapper.properties
 # Server Files
 .server/
+gradle/wrapper/gradle-wrapper.properties
+gradlew
+gradlew.bat
+gradle/wrapper/gradle-wrapper.jar
+server-script.sh

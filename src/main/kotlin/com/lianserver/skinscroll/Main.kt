@@ -14,7 +14,6 @@ import io.github.monun.kommand.Kommand.Companion.register
 import io.github.monun.kommand.getValue
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.EventHandler
@@ -36,7 +35,7 @@ class Main : JavaPlugin(), Listener, PrefixedTextInterface {
             private set
     }
 
-    lateinit var skinItems: YamlConfiguration
+    private lateinit var skinItems: YamlConfiguration
 
     override fun onEnable() {
         instance = this
@@ -64,7 +63,7 @@ class Main : JavaPlugin(), Listener, PrefixedTextInterface {
                 executes {
                     val id: Int by it
 
-                    if(player.inventory.itemInMainHand.type == Material.ENCHANTED_BOOK && player.inventory.itemInMainHand.hasItemMeta()){
+                    if(player.inventory.itemInMainHand.type == Material.KNOWLEDGE_BOOK && player.inventory.itemInMainHand.hasItemMeta()){
                         skinItems[id.toString()] = player.inventory.itemInMainHand
                         player.sendMessage(adminText("아이템을 등록했습니다."))
                     }
@@ -84,13 +83,25 @@ class Main : JavaPlugin(), Listener, PrefixedTextInterface {
     @EventHandler
     fun onUseEffectBook(e: PlayerInteractEvent){
         if(e.hasItem()){
-            if(e.item!!.type == Material.ENCHANTED_BOOK){
+            if(e.item!!.type == Material.KNOWLEDGE_BOOK){
                 if(e.item!!.hasItemMeta()){
                     if(e.item!!.itemMeta.hasLore()){
                         val c = PlainTextComponentSerializer.plainText().serialize(e.item!!.itemMeta.lore()!![0]!!)
 
                         if(c.contains("(id=")){
                             val id = c.split("=")[1].replace(")", "")
+                            val type = when(PlainTextComponentSerializer.plainText().serialize(e.item!!.itemMeta.lore()!![1]!!).split(": ")[1]){
+                                "검" -> "sword"
+                                "도끼" -> "_axe"
+                                "곡괭이" -> "pickaxe"
+                                "삽" -> "shovel"
+                                "괭이" -> "hoe"
+                                "활" -> "bow"
+                                "쇠뇌" -> "crossbow"
+                                else -> "푸틴 개쉑"
+                            }
+
+                            println(type)
 
                             val invSelItem = ChestGui(4, "스킨을 적용할 아이템 선택")
 
@@ -98,7 +109,17 @@ class Main : JavaPlugin(), Listener, PrefixedTextInterface {
 
                             val xy = Pair(0, 0)
 
-                            e.player.inventory.forEach {
+                            e.player.inventory.filterNotNull().filter {
+                                println(it.type.name.lowercase())
+                                when(it.type.name.lowercase()){
+                                    in arrayOf("bow", "crossbow") -> {
+                                        it.type.name.lowercase() == type
+                                    }
+                                    else -> {
+                                        it.type.name.lowercase().contains(type)
+                                    }
+                                }
+                            }.forEach {
                                 p.addItem(
                                     GuiItem(
                                         it

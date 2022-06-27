@@ -12,9 +12,9 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
-    compileOnly("io.github.monun:kommand-core:2.10.0")
-    implementation("com.github.stefvanschie.inventoryframework:IF:0.10.5")
+    compileOnly("io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT")
+    compileOnly("io.github.monun:kommand-core:2.12.0")
+    implementation("com.github.stefvanschie.inventoryframework:IF:0.10.6")
 //    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 //    compileOnly("io.github.monun:heartbeat-coroutines:0.0.3")
 }
